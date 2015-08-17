@@ -1,5 +1,7 @@
 module EagleSearch
   class Index
+    attr_reader :settings
+
     def initialize(klass, settings)
       @klass = klass
       @settings = settings
@@ -33,10 +35,9 @@ module EagleSearch
         }
       }
 
-      columns.select { |column| column.type == :string }.each do |column|
-        base_mappings[type_name][:properties][column.name] = {}
-        base_mappings[type_name][:properties][column.name][:type] = "string"
-        base_mappings[type_name][:properties][column.name][:analyzer] = @settings[:language] if @settings[:language]
+      columns.each do |column|
+        column_settings = @settings.fetch(:fields, {}).fetch(column.name.to_sym, {})
+        base_mappings[type_name][:properties][column.name] = EagleSearch::Field.new(self, column, column_settings).mapping
       end
 
       base_mappings

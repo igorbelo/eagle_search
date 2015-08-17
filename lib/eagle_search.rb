@@ -1,6 +1,7 @@
 require "eagle_search/version"
 require "eagle_search/model"
 require "eagle_search/index"
+require "eagle_search/field"
 require "elasticsearch"
 
 module EagleSearch
