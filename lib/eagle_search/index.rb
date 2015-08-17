@@ -36,8 +36,7 @@ module EagleSearch
       }
 
       columns.each do |column|
-        column_settings = @settings.fetch(:fields, {}).fetch(column.name.to_sym, {})
-        base_mappings[type_name][:properties][column.name] = EagleSearch::Field.new(self, column, column_settings).mapping
+        base_mappings[type_name][:properties][column.name] = EagleSearch::Field.new(self, column).mapping
       end
 
       base_mappings
