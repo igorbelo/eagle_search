@@ -21,7 +21,11 @@ module EagleSearch
     end
 
     def type_name
-      @klass.model_name.param_key
+      if @settings[:mappings]
+        @settings[:mappings].keys.first.downcase
+      else
+        @klass.model_name.param_key
+      end
     end
 
     def index_body
@@ -29,17 +33,21 @@ module EagleSearch
     end
 
     def mappings
-      base_mappings = {
-        type_name => {
-          properties: {}
+      if @settings[:mappings]
+        @settings[:mappings]
+      else
+        base_mappings = {
+          type_name => {
+            properties: {}
+          }
         }
-      }
 
-      columns.each do |column|
-        base_mappings[type_name][:properties][column.name] = EagleSearch::Field.new(self, column).mapping
+        columns.each do |column|
+          base_mappings[type_name][:properties][column.name] = EagleSearch::Field.new(self, column).mapping
+        end
+
+        base_mappings
       end
-
-      base_mappings
     end
 
     def columns
