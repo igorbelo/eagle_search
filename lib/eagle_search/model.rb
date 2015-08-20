@@ -11,6 +11,7 @@ module EagleSearch
 
       def search(term, options = {})
         interpreter = EagleSearch::Interpreter.new(term, options)
+        EagleSearch.client.search index: @index.name, body: interpreter.payload
       end
     end
   end
