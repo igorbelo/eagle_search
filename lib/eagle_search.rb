@@ -3,6 +3,8 @@ require "eagle_search/model"
 require "eagle_search/index"
 require "eagle_search/field"
 require "eagle_search/query"
+require "eagle_search/interpreter"
+require "eagle_search/interpreter/query"
 require "elasticsearch"
 
 module EagleSearch
