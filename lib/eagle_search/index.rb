@@ -8,18 +8,18 @@ module EagleSearch
     end
 
     def create
-      EagleSearch.client.indices.create index: index_name, body: index_body
+      EagleSearch.client.indices.create index: name, body: index_body
     end
 
     def delete
-      EagleSearch.client.indices.delete index: index_name
+      EagleSearch.client.indices.delete index: name
+    end
+
+    def name
+      @name ||= (@settings[:index_name] || @klass.model_name.route_key).downcase
     end
 
     private
-    def index_name
-      (@settings[:index_name] || @klass.model_name.route_key).downcase
-    end
-
     def type_name
       if @settings[:mappings]
         @settings[:mappings].keys.first.downcase
