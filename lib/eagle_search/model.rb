@@ -8,6 +8,10 @@ module EagleSearch
       def create_index
         @index.create
       end
+
+      def search(term, options = {})
+        interpreter = EagleSearch::Interpreter.new(term, options)
+      end
     end
   end
 end
