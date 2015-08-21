@@ -39,6 +39,12 @@ module EagleSearch
       case field_value
       when Array
         { terms: { field => field_value } }
+      when Hash
+        if field_value.keys.any? { |key| %i(lt gt lte gte).include?(key.to_sym) }
+          { range: { field => field_value } }
+        end
+      when Range
+        { range: { field => { gte: field_value.min, lte: field_value.max } } }
       else
         { term: { field => field_value } }
       end
