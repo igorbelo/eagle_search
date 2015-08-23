@@ -8,6 +8,8 @@ module EagleSearch
       if options[:filters]
         filter_payload = EagleSearch::Interpreter::Filter.new(options[:filters]).payload
         @payload = { query: { filtered: { query: query_payload, filter: filter_payload } } }
+      elsif options[:custom_filters]
+        @payload = { query: { filtered: { query: query_payload, filter: options[:custom_filters] } } }
       else
         @payload = { query: query_payload }
       end
