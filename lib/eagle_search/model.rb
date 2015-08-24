@@ -14,6 +14,10 @@ module EagleSearch
         search_response = EagleSearch.client.search index: @index.name, body: interpreter.payload
         EagleSearch::Response.new(search_response)
       end
+
+      def reindex
+        @index.reindex
+      end
     end
   end
 end

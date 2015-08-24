@@ -8,7 +8,7 @@ module EagleSearch
     end
 
     def create
-      EagleSearch.client.indices.create index: name, body: index_body
+      EagleSearch.client.indices.create index: name, body: body
     end
 
     def delete
@@ -16,7 +16,11 @@ module EagleSearch
     end
 
     def name
-      @name ||= (@settings[:index_name] || @klass.model_name.route_key).downcase
+      @name ||= alias_name + "_#{ Time.now.to_i }"
+    end
+
+    def alias_name
+      @alias_name ||= (@settings[:index_name] || @klass.model_name.route_key).downcase
     end
 
     def type_name
@@ -27,9 +31,27 @@ module EagleSearch
       end
     end
 
+    def reindex
+      client = EagleSearch.client
+      aliases = client.indices.get_alias name: alias_name
+      create
+      client.indices.delete index: aliases.keys.join(",")
+      bulk = []
+      all.each do |record|
+        bulk << { index: { _index: @index.alias_name, _type: @index.type_name, _id: record.id } }
+        bulk << record.attributes
+      end
+      client.bulk body: bulk
+    end
+
     private
-    def index_body
-      { mappings: mappings }
+    def body
+      {
+        aliases: {
+          alias_name => {}
+        },
+        mappings: mappings
+      }
     end
 
     def mappings
