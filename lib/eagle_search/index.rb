@@ -19,7 +19,6 @@ module EagleSearch
       @name ||= (@settings[:index_name] || @klass.model_name.route_key).downcase
     end
 
-    private
     def type_name
       if @settings[:mappings]
         @settings[:mappings].keys.first.downcase
@@ -28,6 +27,7 @@ module EagleSearch
       end
     end
 
+    private
     def index_body
       { mappings: mappings }
     end
