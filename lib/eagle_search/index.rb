@@ -1,3 +1,5 @@
+require 'date'
+
 module EagleSearch
   class Index
     attr_reader :settings
@@ -16,7 +18,7 @@ module EagleSearch
     end
 
     def name
-      @name ||= alias_name + "_#{ Time.now.to_i }"
+      @name ||= alias_name + "_#{ DateTime.now.strftime('%Q') }"
     end
 
     def alias_name
