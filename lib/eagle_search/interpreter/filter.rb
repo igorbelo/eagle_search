@@ -5,34 +5,30 @@ module EagleSearch
     LOGICAL_OPERATORS = { and: :must, not: :must_not, or: :should }
 
     def initialize(filters)
-      @payload = { bool: {} }
-      @filters = filters
-
-      @filters.each do |key, value|
-        key = key.to_sym
-
-        if LOGICAL_OPERATORS.keys.include?(key)
-          bool_filter_key = LOGICAL_OPERATORS[key]
-
-          if value.is_a?(Hash)
-            value.each { |field, field_value| add_bool_filter(bool_filter_key, field, field_value) }
-          else
-            value.each do |filters|
-              filters.each do |field, field_value|
-                add_bool_filter(bool_filter_key, field, field_value)
-              end
-            end
-          end
-        else
-          add_bool_filter(:must, key, value)
-        end
-      end
+      @payload = generate_payload(filters)
     end
 
     private
-    def add_bool_filter(bool_filter_key, field, value)
-      @payload[:bool][bool_filter_key] ||= []
-      @payload[:bool][bool_filter_key] << elasticsearch_filter_hash(field, value)
+    def generate_payload(filters)
+      payload = {}
+
+      filters.each do |key, value|
+        key = key.to_sym
+
+        if LOGICAL_OPERATORS.include?(key)
+          payload = { bool: { LOGICAL_OPERATORS[key] => [] } }
+
+          if value.is_a?(Array)
+            value.each { |filter| payload[:bool][LOGICAL_OPERATORS[key]] << generate_payload(filter) }
+          else
+            value.each { |field, field_value| payload[:bool][LOGICAL_OPERATORS[key]] << generate_payload({ field => field_value }) }
+          end
+        else
+          payload = elasticsearch_filter_hash(key, value)
+        end
+      end
+
+      payload
     end
 
     def elasticsearch_filter_hash(field, field_value)
