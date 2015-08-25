@@ -41,6 +41,8 @@ module EagleSearch
         end
       when Range
         { range: { field => { gte: field_value.min, lte: field_value.max } } }
+      when Regexp
+        { regexp: { field => field_value.source } }
       else
         { term: { field => field_value } }
       end
