@@ -22,7 +22,7 @@ module EagleSearch
     end
 
     def alias_name
-      @alias_name ||= (@settings[:index_name] || @klass.model_name.route_key).downcase
+      @alias_name ||= (@settings[:index_name] || @klass.model_name.route_key).downcase + "_#{ EagleSearch.env }"
     end
 
     def type_name
@@ -35,15 +35,20 @@ module EagleSearch
 
     def reindex
       client = EagleSearch.client
-      aliases = client.indices.get_alias name: alias_name
       create
-      client.indices.delete index: aliases.keys.join(",")
-      bulk = []
-      all.each do |record|
-        bulk << { index: { _index: @index.alias_name, _type: @index.type_name, _id: record.id } }
-        bulk << record.attributes
+      begin
+        aliases = client.indices.get_alias name: alias_name
+        client.indices.delete index: aliases.keys.join(",")
+      rescue
+        #do something
+      ensure
+        bulk = []
+        @klass.all.each do |record|
+          bulk << { index: { _index: alias_name, _type: type_name, _id: record.id } }
+          bulk << record.attributes
+        end
+        client.bulk body: bulk
       end
-      client.bulk body: bulk
     end
 
     private

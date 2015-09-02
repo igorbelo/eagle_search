@@ -16,4 +16,8 @@ module EagleSearch
   def self.client
     @client ||= Elasticsearch::Client.new
   end
+
+  def self.env
+    @env ||= ENV['RAILS_ENV'] || "development"
+  end
 end
