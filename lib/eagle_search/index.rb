@@ -35,13 +35,13 @@ module EagleSearch
 
     def reindex
       client = EagleSearch.client
-      create
       begin
         aliases = client.indices.get_alias name: alias_name
         client.indices.delete index: aliases.keys.join(",")
       rescue
         #do something
       ensure
+        create
         bulk = []
         @klass.all.each do |record|
           bulk << { index: { _index: alias_name, _type: type_name, _id: record.id } }
