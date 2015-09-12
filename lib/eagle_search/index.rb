@@ -18,11 +18,11 @@ module EagleSearch
     end
 
     def name
-      @name ||= alias_name + "_#{ DateTime.now.strftime('%Q') }"
+      @name ||= @settings[:index_name] || (alias_name + "_#{ DateTime.now.strftime('%Q') }")
     end
 
     def alias_name
-      @alias_name ||= (@settings[:index_name] || @klass.model_name.route_key).downcase + "_#{ EagleSearch.env }"
+      @alias_name ||= @settings[:index_name] || (@klass.model_name.route_key.downcase + "_#{ EagleSearch.env }")
     end
 
     def type_name
