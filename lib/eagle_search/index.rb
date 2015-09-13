@@ -47,7 +47,7 @@ module EagleSearch
           bulk << { index: { _index: alias_name, _type: type_name, _id: record.id } }
           bulk << record.attributes
         end
-        client.bulk body: bulk
+        client.bulk body: bulk unless bulk.empty?
       end
     end
 
