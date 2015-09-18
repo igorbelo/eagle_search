@@ -9,6 +9,18 @@ module EagleSearch
         @index.create
       end
 
+      def delete_index
+        @index.delete
+      end
+
+      def refresh_index
+        @index.refresh
+      end
+
+      def index_info
+        @index.info
+      end
+
       def search(term, options = {})
         interpreter = EagleSearch::Interpreter.new(term, options)
         search_response = EagleSearch.client.search index: @index.alias_name, body: interpreter.payload

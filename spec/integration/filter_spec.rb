@@ -1,6 +1,15 @@
 require "spec_helper"
 
 describe "filtering" do
+  before(:all) do
+    class Product < ActiveRecord::Base
+      include EagleSearch
+      eagle_search
+    end
+
+    reindex_products
+  end
+
   context "by name" do
     it "matches 2 documents when filter matches by name" do
       hits = Product.search("*", filters: { name: "book" }).hits

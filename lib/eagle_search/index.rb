@@ -2,7 +2,7 @@ require 'date'
 
 module EagleSearch
   class Index
-    attr_reader :settings
+    attr_reader :settings, :alias_name
 
     def initialize(klass, settings)
       @klass = klass
@@ -17,12 +17,20 @@ module EagleSearch
       EagleSearch.client.indices.delete index: name
     end
 
+    def refresh
+      EagleSearch.client.indices.refresh index: name
+    end
+
+    def info
+      EagleSearch.client.indices.get index: name
+    end
+
     def name
-      @name ||= alias_name + "_#{ DateTime.now.strftime('%Q') }"
+      @name ||= @settings[:index_name] || "#{ alias_name }_#{ DateTime.now.strftime('%Q') }"
     end
 
     def alias_name
-      @alias_name ||= (@settings[:index_name] || @klass.model_name.route_key).downcase + "_#{ EagleSearch.env }"
+      @alias_name ||= @settings[:index_name] || "#{ @klass.model_name.route_key.downcase }_#{ EagleSearch.env }"
     end
 
     def type_name
@@ -53,12 +61,11 @@ module EagleSearch
 
     private
     def body
-      {
-        aliases: {
-          alias_name => {}
-        },
+      body = {
         mappings: mappings
       }
+      body[:aliases] = { alias_name => {} } unless @settings[:index_name]
+      body
     end
 
     def mappings
