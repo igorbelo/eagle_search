@@ -7,14 +7,8 @@ describe "filtering" do
       eagle_search
     end
 
-    Product.create(name: "Book: The Good Neighbor", description: "From a phenomenal new voice in suspense fiction comes a book that will forever change the way you look at the people closest to you", active: true, list_price: 14.95, sale_price: 4.99, available_stock: 300)
-    Product.create(name: "Book: The Hidden Child", description: "The brilliant new psychological thriller from worldwide bestseller Camilla Läckberg—the chilling struggle of a young woman facing the darkest chapter of Europe’s past.", active: false, list_price: 8.30, sale_price: 5.20, available_stock: 0)
-    Product.create(name: "Thanth Womens Short Kimono Sleeve Boat Neck Dolman Top", description: "Simply design tunic dress which is basic but stylish.", active: true, list_price: 12.30, sale_price: 9.13, available_stock: 500)
-    Product.reindex
-    EagleSearch.client.indices.refresh index: Product.index.alias_name
+    reindex_products
   end
-
-  after(:all) { EagleSearch.client.indices.delete index: "#{ Product.index.alias_name }*" }
 
   context "by name" do
     it "matches 2 documents when filter matches by name" do

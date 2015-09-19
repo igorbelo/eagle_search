@@ -8,32 +8,24 @@ describe "custom settings" do
                      custom_type: {
                        properties: {
                          name: {
-                           type: "string",
-                           index: "no"
+                           index: "no",
+                           type: "string"
+                         },
+                         description: {
+                           index: "not_analyzed",
+                           type: "string"
                          }
                        }
                      }
                    }
     end
-    Product.create_index
+
+    reindex_products
   end
 
-  after(:all) { EagleSearch.client.indices.delete index: "#{ Product.index.alias_name }*" }
-
-  let(:index_name) { Product.index.name }
-  let!(:response) { EagleSearch.client.indices.get(index: index_name) }
-
-  it "matches the custom index name" do
-    expect(response.keys).to eq %w(custom_name)
-  end
-
-  it "matches the custom alias name" do
-    expect(response["custom_name"]["aliases"]).to eq({ "custom_name" => {} })
-  end
-
-  it "matches the custom mappings" do
-    properties_response = response["custom_name"]["mappings"]["custom_type"]["properties"]
-    expect(properties_response["name"]["type"]).to eq "string"
-    expect(properties_response["name"]["index"]).to eq "no"
+  it "is expected that custom field mappings were integrated" do
+    properties = Product.index_info["custom_name"]["mappings"]["custom_type"]["properties"]
+    expect(properties["name"]).to eq({ "index" => "no", "type" => "string" })
+    expect(properties["description"]).to eq({ "index" => "not_analyzed", "type" => "string" })
   end
 end

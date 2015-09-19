@@ -9,8 +9,16 @@ module EagleSearch
         @index.create
       end
 
-      def index
-        @index
+      def delete_index
+        @index.delete
+      end
+
+      def refresh_index
+        @index.refresh
+      end
+
+      def index_info
+        @index.info
       end
 
       def search(term, options = {})
