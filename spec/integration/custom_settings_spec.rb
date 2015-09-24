@@ -20,7 +20,7 @@ describe "custom settings" do
                    }
     end
 
-    reindex_products
+    Product.create_index
   end
 
   it "is expected that custom field mappings were integrated" do

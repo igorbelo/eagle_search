@@ -5,30 +5,34 @@ module EagleSearch
         @index = EagleSearch::Index.new(self, settings)
       end
 
+      def eagle_search_index
+        @index
+      end
+
       def create_index
-        @index.create
+        eagle_search_index.create
       end
 
       def delete_index
-        @index.delete
+        eagle_search_index.delete
       end
 
       def refresh_index
-        @index.refresh
+        eagle_search_index.refresh
       end
 
       def index_info
-        @index.info
+        eagle_search_index.info
       end
 
       def search(term, options = {})
         interpreter = EagleSearch::Interpreter.new(term, options)
-        search_response = EagleSearch.client.search index: @index.alias_name, body: interpreter.payload
+        search_response = EagleSearch.client.search index: eagle_search_index.alias_name, body: interpreter.payload
         EagleSearch::Response.new(search_response)
       end
 
       def reindex
-        @index.reindex
+        eagle_search_index.reindex
       end
     end
   end

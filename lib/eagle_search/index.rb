@@ -59,15 +59,6 @@ module EagleSearch
       end
     end
 
-    private
-    def body
-      body = {
-        mappings: mappings
-      }
-      body[:aliases] = { alias_name => {} } unless @settings[:index_name]
-      body
-    end
-
     def mappings
       if @settings[:mappings]
         @settings[:mappings]
@@ -84,6 +75,15 @@ module EagleSearch
 
         base_mappings
       end
+    end
+
+    private
+    def body
+      body = {
+        mappings: mappings
+      }
+      body[:aliases] = { alias_name => {} } unless @settings[:index_name]
+      body
     end
 
     def columns
