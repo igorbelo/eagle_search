@@ -5,7 +5,11 @@ module EagleSearch
     LOGICAL_OPERATORS = { and: :must, not: :must_not, or: :should }
 
     def initialize(filters)
-      @payload = generate_payload(filters)
+      @filters = filters
+    end
+
+    def payload
+      @payload ||= generate_payload(@filters)
     end
 
     private

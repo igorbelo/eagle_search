@@ -1,18 +1,27 @@
 module EagleSearch
   class Interpreter
-    attr_reader :payload
+    def initialize(klass, query, options)
+      @query_payload = EagleSearch::Interpreter::Query.new(klass, query, options).payload
 
-    def initialize(query, options)
-      query_payload = EagleSearch::Interpreter::Query.new(query).payload
+      @filter_payload =
+        if options[:filters]
+          EagleSearch::Interpreter::Filter.new(options[:filters]).payload
+        elsif options[:custom_filters]
+          options[:custom_filters]
+        else
+          {}
+        end
+    end
 
-      if options[:filters]
-        filter_payload = EagleSearch::Interpreter::Filter.new(options[:filters]).payload
-        @payload = { query: { filtered: { query: query_payload, filter: filter_payload } } }
-      elsif options[:custom_filters]
-        @payload = { query: { filtered: { query: query_payload, filter: options[:custom_filters] } } }
-      else
-        @payload = { query: query_payload }
-      end
+    def payload
+      {
+        query: {
+          filtered: {
+            query: @query_payload,
+            filter: @filter_payload
+          }
+        }
+      }
     end
   end
 end
