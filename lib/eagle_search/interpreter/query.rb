@@ -1,14 +1,19 @@
 module EagleSearch
   class Interpreter::Query
-    attr_reader :payload
 
     def initialize(klass, query, options)
-      case query
+      @klass = klass
+      @query = query
+      @options = options
+    end
+
+    def payload
+      case @query
       when String
-        if query == "*"
-          @payload = { match_all: {} }
+        if @query == "*"
+          { match_all: {} }
         else
-          @payload = { multi_match: { query: query, type: "best_fields", fields: ["name"], tie_breaker: 0.3 } }
+          { multi_match: { query: query, type: "best_fields", fields: ["name"], tie_breaker: 0.3 } }
         end
       end
     end
