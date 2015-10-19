@@ -5,6 +5,10 @@ describe "default settings" do
     class Product < ActiveRecord::Base
       include EagleSearch
       eagle_search
+
+      def index_data
+        as_json only: [:id, :available_stock, :created_at, :updated_at, :active, :name, :description, :sale_price, :list_price]
+      end
     end
 
     Product.create_index

@@ -5,6 +5,10 @@ describe "default settings" do
     class Product < ActiveRecord::Base
       include EagleSearch
       eagle_search language: "portuguese"
+
+      def index_data
+        as_json only: [:name, :description]
+      end
     end
 
     Product.create_index

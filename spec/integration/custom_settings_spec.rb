@@ -18,6 +18,10 @@ describe "custom settings" do
                        }
                      }
                    }
+
+      def index_data
+        as_json only: [:name, :description]
+      end
     end
 
     Product.create_index

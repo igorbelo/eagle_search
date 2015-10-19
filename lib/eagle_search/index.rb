@@ -14,15 +14,15 @@ module EagleSearch
     end
 
     def delete
-      EagleSearch.client.indices.delete index: name
+      EagleSearch.client.indices.delete index: alias_name
     end
 
     def refresh
-      EagleSearch.client.indices.refresh index: name
+      EagleSearch.client.indices.refresh index: alias_name
     end
 
     def info
-      EagleSearch.client.indices.get index: name
+      EagleSearch.client.indices.get index: alias_name
     end
 
     def name
@@ -53,7 +53,7 @@ module EagleSearch
         bulk = []
         @klass.all.each do |record|
           bulk << { index: { _index: alias_name, _type: type_name, _id: record.id } }
-          bulk << record.attributes
+          bulk << record.index_data
         end
         client.bulk body: bulk
       end
@@ -80,9 +80,9 @@ module EagleSearch
     private
     def body
       body = {
-        mappings: mappings
+        mappings: mappings,
+        aliases: { alias_name => {} }
       }
-      body[:aliases] = { alias_name => {} } unless @settings[:index_name]
       body
     end
 
