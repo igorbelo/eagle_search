@@ -3,6 +3,7 @@ require 'date'
 module EagleSearch
   class Index
     attr_reader :settings, :alias_name
+    delegate :columns, to: :klass
 
     def initialize(klass, settings)
       @klass = klass
@@ -81,13 +82,40 @@ module EagleSearch
     def body
       body = {
         mappings: mappings,
-        aliases: { alias_name => {} }
+        aliases: { alias_name => {} },
+        settings: {
+          analysis: analysis_settings
+        }
       }
+      body[:settings][:number_of_shards] = 1 if EagleSearch.env == "test" || EagleSearch.env == "development"
       body
     end
 
-    def columns
-      @klass.columns
+    def analysis_settings
+      {
+        filter: {
+          eagle_search_shingle_filter: {
+            type: "shingle",
+            min_shingle_size: 2,
+            max_shingle_size: 2,
+            output_unigrams: false
+          }
+        },
+        analyzer: {
+          eagle_search_shingle_analyzer: {
+            type: "custom",
+            tokenizer: "standard",
+            filter: [
+              "lowercase",
+              "eagle_search_shingle_filter"
+            ]
+          }
+        }
+      }
+    end
+
+    def klass
+      @klass
     end
   end
 end
