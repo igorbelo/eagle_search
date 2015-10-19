@@ -41,11 +41,23 @@ describe "default settings" do
     end
 
     it "sets default settings for name" do
-      expect(properties["name"]).to eq({ index: "analyzed", type: "string", analyzer: "english" })
+      expect(properties["name"]).to eq({ index: "analyzed", type: "string", analyzer: "english", fields: {
+                                           shingle: {
+                                             type: "string",
+                                             analyzer: "eagle_search_shingle_analyzer"
+                                           }
+                                         }
+                                       })
     end
 
     it "sets default settings for description" do
-      expect(properties["description"]).to eq({ index: "analyzed", type: "string", analyzer: "english" })
+      expect(properties["description"]).to eq({ index: "analyzed", type: "string", analyzer: "english", fields: {
+                                                  shingle: {
+                                                    type: "string",
+                                                    analyzer: "eagle_search_shingle_analyzer"
+                                                  }
+                                                }
+                                              })
     end
 
     it "sets default settings for sale_price" do

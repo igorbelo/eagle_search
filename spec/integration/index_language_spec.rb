@@ -21,11 +21,23 @@ describe "default settings" do
     end
 
     it "sets portuguese analyzer for name" do
-      expect(properties["name"]).to eq({ index: "analyzed", type: "string", analyzer: "portuguese" })
+      expect(properties["name"]).to eq({ index: "analyzed", type: "string", analyzer: "portuguese", fields: {
+                                           shingle: {
+                                             type: "string",
+                                             analyzer: "eagle_search_shingle_analyzer"
+                                           }
+                                         }
+                                       })
     end
 
     it "sets portuguese analyzer for description" do
-      expect(properties["description"]).to eq({ index: "analyzed", type: "string", analyzer: "portuguese" })
+      expect(properties["description"]).to eq({ index: "analyzed", type: "string", analyzer: "portuguese", fields: {
+                                                  shingle: {
+                                                    type: "string",
+                                                    analyzer: "eagle_search_shingle_analyzer"
+                                                  }
+                                                }
+                                              })
     end
   end
 end
