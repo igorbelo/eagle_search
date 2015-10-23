@@ -32,37 +32,75 @@ module EagleSearch
     end
 
     def query_payload
+      @query_payload = {}
+      build_multi_match_query
+      build_match_queries
+      build_term_queries
+      @query_payload
+    end
+
+    def build_multi_match_query
       if analyzed_properties
-        payload = {
+        @query_payload = {
           bool: {
-            should: [
-              {
-                multi_match: {
-                  query: @query,
-                  fields: @options[:fields] || analyzed_properties.keys,
-                  tie_breaker: 0.3
-                }
-              },
-              {
-                bool: {
-                  should: []
-                }
-              }
-            ]
+            should: []
           }
         }
 
-        #shingle for analyzed properties
-        analyzed_properties.keys.each do |field_name|
-          payload[:bool][:should][1][:bool][:should] << {
-            match: {
-              "#{ field_name }.shingle" => @query
-            }
+        @query_payload[:bool][:should] << {
+          multi_match: {
+            query: @query,
+            fields: @options[:fields] || analyzed_properties.keys,
+            tie_breaker: 0.3
           }
-        end
+        }
+      end
+    end
+
+    def build_match_queries
+      return unless analyzed_properties
+
+      match_queries = []
+      analyzed_properties.keys.each do |field_name|
+        match_queries << {
+          match: {
+            "#{ field_name }.shingle" => @query
+          }
+        }
       end
 
-      payload
+      payload = {
+        bool: {
+          should: match_queries
+        }
+      }
+
+      @query_payload[:bool] ? @query_payload[:bool][:should] << payload : @query_payload[:bool][:should] = payload
+    end
+
+    def build_term_queries
+      return unless not_analyzed_properties
+
+      term_queries = []
+      not_analyzed_properties.keys.each do |field_name|
+        term_queries << {
+          term: {
+            field_name => @query
+          }
+        }
+      end
+
+      payload = {
+        bool: {
+          should: term_queries
+        }
+      }
+
+      if @query_payload[:bool]
+        @query_payload[:bool][:should][1][:bool][:should] << payload
+      else
+        @query_payload = payload
+      end
     end
   end
 end
