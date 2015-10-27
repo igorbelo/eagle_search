@@ -1,9 +1,6 @@
 require 'active_record'
 require 'eagle_search'
 
-require 'active_record'
-require 'eagle_search'
-
 ENV['RAILS_ENV'] ||= "test"
 
 ActiveRecord::Base.establish_connection adapter: "sqlite3", database: ":memory:"
@@ -40,6 +37,10 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.before(:suite) { create_products }
-  config.after(:all)    { Product.delete_index }
+  config.before(:all) { create_products }
+
+  config.after(:all) do
+    Product.all.map(&:destroy)
+    Product.delete_index
+  end
 end
