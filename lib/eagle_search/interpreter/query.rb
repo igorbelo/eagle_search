@@ -85,7 +85,10 @@ module EagleSearch
       not_analyzed_properties.keys.each do |field_name|
         term_queries << {
           term: {
-            field_name => @query
+            field_name => {
+              value: @query,
+              boost: 5
+            }
           }
         }
       end
