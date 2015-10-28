@@ -64,7 +64,10 @@ module EagleSearch
       analyzed_properties.keys.each do |field_name|
         match_queries << {
           match: {
-            "#{ field_name }.shingle" => @query
+            "#{ field_name }.shingle" => {
+              query: @query,
+              boost: 3
+            }
           }
         }
       end
