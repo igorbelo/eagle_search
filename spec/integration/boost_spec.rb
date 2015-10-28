@@ -26,7 +26,7 @@ describe "boost" do
   end
 
   it "gives more relevance to description" do
-    response = Product.search "The Good Neighbor", fields: %w(name description^3)
+    response = Product.search "The Good Neighbor", fields: %w(name description^5)
     hits = response.hits
     expect(hits[0]["_source"]["name"]).to eq("The Good House")
     expect(hits[1]["_source"]["name"]).to eq("The Good Neighbor")
