@@ -8,6 +8,7 @@ ActiveRecord::Base.establish_connection adapter: "sqlite3", database: ":memory:"
 ActiveRecord::Migration.create_table :products do |t|
   t.string :name
   t.text :description
+  t.string :mpn
   t.boolean :active
   t.decimal :list_price
   t.decimal :sale_price
