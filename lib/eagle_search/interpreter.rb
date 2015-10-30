@@ -9,7 +9,7 @@ module EagleSearch
     def payload
       return @options[:custom_payload] if @options[:custom_payload]
 
-      {
+      payload = {
         query: {
           filtered: {
             query: query_payload,
@@ -17,6 +17,9 @@ module EagleSearch
           }
         }
       }
+
+      payload.merge!({ sort: @options[:sort] }) if @options[:sort]
+      payload
     end
 
     private
