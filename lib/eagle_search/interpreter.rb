@@ -7,6 +7,8 @@ module EagleSearch
     end
 
     def payload
+      return @options[:custom_payload] if @options[:custom_payload]
+
       {
         query: {
           filtered: {
@@ -19,7 +21,11 @@ module EagleSearch
 
     private
     def query_payload
-      EagleSearch::Interpreter::Query.new(@index, @query, @options).payload
+      if @options[:custom_query]
+        @options[:custom_query]
+      else
+        EagleSearch::Interpreter::Query.new(@index, @query, @options).payload
+      end
     end
 
     def filter_payload
