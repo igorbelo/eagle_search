@@ -1,5 +1,4 @@
 require "spec_helper"
-require "pry"
 
 describe "custom payload" do
   before(:all) do
