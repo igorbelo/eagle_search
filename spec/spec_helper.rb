@@ -29,6 +29,10 @@ def reindex_products
   Product.refresh_index
 end
 
+def integration_spec?(location)
+  location =~ /spec\/integration/
+end
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
@@ -38,10 +42,12 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.before(:all) { create_products }
+  config.before(:all) { |s| create_products if integration_spec?(s.class.metadata[:location]) }
 
-  config.after(:all) do
-    Product.all.map(&:destroy)
-    Product.delete_index
+  config.after(:all) do |s|
+    if integration_spec?(s.class.metadata[:location])
+      Product.all.map(&:destroy)
+      Product.delete_index
+    end
   end
 end
