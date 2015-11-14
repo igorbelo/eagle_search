@@ -4,6 +4,8 @@ module EagleSearch
       @index   = index
       @query   = query
       @options = options
+      @options[:page] = @options[:page].to_i if @options[:page]
+      @options[:per_page] = @options[:per_page].to_i if @options[:per_page]
     end
 
     def payload
@@ -19,6 +21,16 @@ module EagleSearch
       }
 
       payload.merge!({ sort: @options[:sort] }) if @options[:sort]
+
+      # from
+      if @options[:page] && @options[:page] > 1
+        from = (@options[:page] - 1) * (@options[:per_page] || 10)
+        payload.merge!({ from: from })
+      end
+
+      #size
+      payload.merge!({ size: @options[:per_page] }) if @options[:per_page]
+
       payload
     end
 

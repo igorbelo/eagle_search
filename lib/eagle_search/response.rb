@@ -20,5 +20,17 @@ module EagleSearch
     def hits
       @response["hits"]["hits"]
     end
+
+    def current_page
+      @options[:page] || 1
+    end
+
+    def total_pages
+      (total_hits / limit_value.to_f).ceil
+    end
+
+    def limit_value
+      @options[:per_page] || 25
+    end
   end
 end
