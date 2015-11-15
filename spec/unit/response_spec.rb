@@ -22,9 +22,9 @@ describe EagleSearch::Response do
     }
   end
 
-  describe "#records" do
-    subject { EagleSearch::Response.new(Product, response, {}) }
+  subject { EagleSearch::Response.new(Product, response, {}) }
 
+  describe "#records" do
     context "when another ActiveRecord model is included" do
       subject { EagleSearch::Response.new(Product, response, includes: :xpto) }
 
@@ -49,6 +49,27 @@ describe EagleSearch::Response do
       expect(Product).to receive(:where).with(Product.primary_key => [1, 3, 234, 97]).once
 
       expect(subject.records).to eq(product_records)
+    end
+  end
+
+  describe "#each" do
+    let(:records) { Product.all }
+    before do
+      Product.create(name: "Xpto")
+      allow(subject).to receive(:records).and_return(records)
+    end
+
+    it "returns an enumerator if no block given" do
+      enumerator = double("Enumerator")
+      allow(records).to receive(:to_enum).and_return(enumerator)
+      expect(subject.each).to eq(enumerator)
+    end
+
+    it "yields article if block given" do
+      subject.each do |product|
+        expect(product.name).to eq("Xpto")
+        expect(product).to be_an(Product)
+      end
     end
   end
 end

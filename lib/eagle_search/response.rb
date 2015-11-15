@@ -13,6 +13,14 @@ module EagleSearch
       @klass.where(@klass.primary_key => ids)
     end
 
+    def each
+      if block_given?
+        records.each { |e| yield(e) }
+      else
+        records.to_enum
+      end
+    end
+
     def total_hits
       @response["hits"]["total"]
     end
