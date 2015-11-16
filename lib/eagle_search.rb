@@ -11,6 +11,8 @@ require "elasticsearch"
 module EagleSearch
   def self.included(base)
     base.extend(EagleSearch::Model::ClassMethods)
+    base.include(EagleSearch::Model::InstanceMethods)
+    base.after_commit :reindex
   end
 
   def self.client

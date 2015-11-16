@@ -35,5 +35,18 @@ module EagleSearch
         eagle_search_index.reindex
       end
     end
+
+    module InstanceMethods
+      def reindex
+        index = self.class.eagle_search_index
+        reindex_option = index.settings[:reindex]
+        EagleSearch.client.index(
+          index: index.alias_name,
+          type: index.type_name,
+          id: id,
+          body: index_data
+        ) if reindex_option.nil? || reindex_option
+      end
+    end
   end
 end
