@@ -4,7 +4,7 @@ describe "language" do
   before(:all) do
     class Product < ActiveRecord::Base
       include EagleSearch
-      eagle_search language: "portuguese"
+      eagle_search reindex: false, language: "portuguese"
 
       def index_data
         as_json only: [:name, :description]

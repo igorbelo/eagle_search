@@ -4,7 +4,7 @@ describe "boost" do
   before(:all) do
     class Product < ActiveRecord::Base
       include EagleSearch
-      eagle_search
+      eagle_search reindex: false
 
       def index_data
         as_json only: [:name, :description]

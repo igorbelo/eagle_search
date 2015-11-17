@@ -4,7 +4,7 @@ describe "relevance" do
   before(:all) do
     class Product < ActiveRecord::Base
       include EagleSearch
-      eagle_search exact_match_fields: [:mpn]
+      eagle_search reindex: false, exact_match_fields: [:mpn]
 
       def index_data
         as_json only: [:name, :description, :mpn]

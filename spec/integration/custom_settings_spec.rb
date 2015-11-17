@@ -4,7 +4,7 @@ describe "custom settings" do
   before(:all) do
     class Product < ActiveRecord::Base
       include EagleSearch
-      eagle_search index_name: "custom_name", mappings: {
+      eagle_search reindex: false, index_name: "custom_name", mappings: {
                      custom_type: {
                        properties: {
                          name: {

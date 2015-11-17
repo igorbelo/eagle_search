@@ -4,7 +4,7 @@ describe "exact match fields" do
   before(:all) do
     class Product < ActiveRecord::Base
       include EagleSearch
-      eagle_search exact_match_fields: [:name]
+      eagle_search reindex: false, exact_match_fields: [:name]
 
       def index_data
         as_json only: [:name, :description]

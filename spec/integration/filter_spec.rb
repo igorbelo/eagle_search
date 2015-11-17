@@ -4,7 +4,7 @@ describe "filtering" do
   before(:all) do
     class Product < ActiveRecord::Base
       include EagleSearch
-      eagle_search
+      eagle_search reindex: false
 
       def index_data
         as_json only: [:id, :available_stock, :created_at, :updated_at, :active, :name, :description, :sale_price, :list_price]
