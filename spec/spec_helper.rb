@@ -24,7 +24,8 @@ def create_products
   Product.create(name: "Thanth Womens Short Kimono Sleeve Boat Neck Dolman Top", description: "Simply design tunic dress which is basic but stylish.", active: true, list_price: 12.30, sale_price: 9.13, available_stock: 500)
 end
 
-def reindex_products
+def reindex_products(options = { create: true })
+  create_products if options[:create]
   Product.reindex
   Product.refresh_index
 end
@@ -41,8 +42,6 @@ RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
   end
-
-  config.before(:all) { |s| create_products if integration_spec?(s.class.metadata[:location]) }
 
   config.after(:all) do |s|
     if integration_spec?(s.class.metadata[:location])
