@@ -22,6 +22,17 @@ describe EagleSearch::Response do
     }
   end
 
+  before(:all) do
+    class Product < ActiveRecord::Base
+      include EagleSearch
+      eagle_search reindex: false
+
+      def index_data
+        as_json only: [:name, :description]
+      end
+    end
+  end
+
   subject { EagleSearch::Response.new(Product, response, {}) }
 
   describe "#records" do
