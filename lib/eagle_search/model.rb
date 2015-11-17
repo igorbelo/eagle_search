@@ -38,10 +38,10 @@ module EagleSearch
 
     module InstanceMethods
       def reindex
+        index = self.class.eagle_search_index
         reindex_option = index.settings[:reindex]
 
         if reindex_option.nil? || reindex_option
-          index = self.class.eagle_search_index
           begin
             index.info
           rescue Elasticsearch::Transport::Transport::Errors::NotFound
