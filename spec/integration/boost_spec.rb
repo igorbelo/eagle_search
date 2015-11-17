@@ -11,11 +11,9 @@ describe "boost" do
       end
     end
 
-    Product.all.map(&:destroy)
-
     Product.create(name: "The Good Neighbor", description: "The good house is a house which is warm on the winter.")
     Product.create(name: "The Good House", description: "The Good Neighbor is a neighbor who loves his neighbor.")
-    reindex_products
+    reindex_products(create: false)
   end
 
   it "treats all fields with the same relevance" do
