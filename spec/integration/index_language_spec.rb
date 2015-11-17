@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "default settings" do
+describe "language" do
   before(:all) do
     class Product < ActiveRecord::Base
       include EagleSearch
