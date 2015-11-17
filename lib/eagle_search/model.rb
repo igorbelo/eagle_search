@@ -38,14 +38,24 @@ module EagleSearch
 
     module InstanceMethods
       def reindex
-        index = self.class.eagle_search_index
         reindex_option = index.settings[:reindex]
-        EagleSearch.client.index(
-          index: index.alias_name,
-          type: index.type_name,
-          id: id,
-          body: index_data
-        ) if reindex_option.nil? || reindex_option
+
+        if reindex_option.nil? || reindex_option
+          index = self.class.eagle_search_index
+          begin
+            index.info
+          rescue Elasticsearch::Transport::Transport::Errors::NotFound
+            index.create
+          ensure
+            index.refresh
+            EagleSearch.client.index(
+              index: index.alias_name,
+              type: index.type_name,
+              id: id,
+              body: index_data
+            )
+          end
+        end
       end
     end
   end

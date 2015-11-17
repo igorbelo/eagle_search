@@ -12,7 +12,7 @@ module EagleSearch
   def self.included(base)
     base.extend(EagleSearch::Model::ClassMethods)
     base.include(EagleSearch::Model::InstanceMethods)
-    base.after_commit :reindex
+    base.after_commit :reindex, on: [:create, :update]
   end
 
   def self.client
