@@ -124,6 +124,7 @@ Product.search "*", filters: {
 Available options are `gte`, `gt`, `lt`, `lte`.
 
 ## Settings
+### Exact string fields
 By default, EagleSearch (even  Elasticsearch) will map string field as `analyzed`, which won't let you to filter these fields.
 
 If you have an exact value for string, and want to search by its exact value, you explicitly need to declare it, for example:
@@ -139,4 +140,65 @@ It will let you to filter string fields:
 Product.search "*", filters: {
   code: "JUR123-A"
 }
+```
+
+### Unsearchable fields
+You can disable the search and filter on certain fields:
+```ruby
+class Product < ActiveRecord::Base
+  include EagleSearch
+  eagle_search unsearchable_fields: [:code]
+end
+```
+
+### Custom Mapping
+You can declare the [index mapping](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping-analysis.html) by yourself:
+```ruby
+class Product < ActiveRecord::Base
+  include EagleSearch
+  eagle_search mappings: {
+    type_name: {
+      properties: {
+        name: {
+          index: "no",
+          type: "string"
+        }
+      }
+    }
+  }
+end
+```
+
+### Custom index name
+```ruby
+class Product < ActiveRecord::Base
+  include EagleSearch
+  eagle_search index_name: "product"
+end
+```
+
+### Language
+You can set the language of your index (default is english):
+```ruby
+class Product < ActiveRecord::Base
+  include EagleSearch
+  eagle_search language: "portuguese"
+end
+```
+Available languages are [here](https://www.elastic.co/guide/en/elasticsearch/reference/1.4/analysis-lang-analyzer.html)
+
+**IMPORTANT all of the settings above require index to be reindexed:**
+```ruby
+Product.reindex
+```
+
+### Auto reindex
+As a record is created or changed, EagleSearch automatically reindex the record by default.
+
+You can disable the auto reindex:
+```ruby
+class Product < ActiveRecord::Base
+  include EagleSearch
+  eagle_search reindex: false
+end
 ```
