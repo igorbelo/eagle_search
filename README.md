@@ -38,7 +38,7 @@ As the model was configured, you should populate the records into Elasticsearch 
 ```ruby
 Article.reindex
 ```
-EagleSearch will automatically handle the mapping based on model column types unless you explicit set a custom mapping.
+EagleSearch will automatically handle the mapping based on model column types unless you explicit set a [custom mapping](https://github.com/igorbelo/eagle_search#custom-mapping).
 
 ## Searching
 ### Basic
