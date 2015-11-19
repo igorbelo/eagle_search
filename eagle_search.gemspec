@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Rails Model integration for Elasticsearch.}
   spec.description   = %q{Rails Model integration for Elasticsearch.}
-  spec.homepage      = "https://github.com/igorbelo/eagle_graph"
+  spec.homepage      = "https://github.com/igorbelo/eagle_search"
   spec.license       = "MIT"
   spec.files         = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   spec.bindir        = "exe"
