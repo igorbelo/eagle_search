@@ -97,7 +97,15 @@ Product.search "*", filters: {
 }
 ```
 
-Filtering ranges:
+Filtering by string (only for `not_analyzed` strings):
+```ruby
+Product.search "*", filters: {
+  name: "Book: The Hidden Child"
+}
+```
+If you want to map a string field as an exact value, you need to set
+
+Filtering by ranges:
 ```ruby
 Product.search "*", filters: {
   available_stock: (10..150)
@@ -114,3 +122,21 @@ Product.search "*", filters: {
 }
 ```
 Available options are `gte`, `gt`, `lt`, `lte`.
+
+## Settings
+By default, EagleSearch (even  Elasticsearch) will map string field as `analyzed`, which won't let you to filter these fields.
+
+If you have an exact value for string, and want to search by its exact value, you explicitly need to declare it, for example:
+```ruby
+class Product < ActiveRecord::Base
+  include EagleSearch
+  eagle_search exact_match_fields: [:code]
+end
+```
+
+It will let you to filter string fields:
+```ruby
+Product.search "*", filters: {
+  code: "JUR123-A"
+}
+```
