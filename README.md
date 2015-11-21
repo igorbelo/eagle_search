@@ -149,6 +149,13 @@ Product.search "*", custom_payload: {
 }
 ```
 
+### Relevance (boost)
+If you want to consider some fields more important:
+```ruby
+Product.search "*", fields: ["name^5", "description"]
+```
+The number 5 is the factor that the field will be boosted, see [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html#_literal_fields_literal_and_per_field_boosting).
+
 ### Pagination (tested with Kaminari)
 ```ruby
 Product.search "*", page: 2, per_page: 20
