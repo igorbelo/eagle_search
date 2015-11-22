@@ -95,6 +95,9 @@ Product.search "*", filters: {
       },
       {
         available_stock: 500
+      },
+      {
+        not: { expired: false }
       }
     ]
   }
@@ -107,7 +110,7 @@ Product.search "*", filters: {
   name: "Book: The Hidden Child"
 }
 ```
-If you want to map a string field as an exact value, you need to set
+If you want to map a string field as an exact value, you need to set it, as documented [here](https://github.com/igorbelo/eagle_search#exact-string-fields).
 
 Filtering by ranges:
 ```ruby
@@ -250,3 +253,5 @@ end
 * Suggestions
 * Synonyms
 * Match by a fragment of word
+* Typoes and mispellings
+*
