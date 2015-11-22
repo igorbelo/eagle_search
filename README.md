@@ -249,3 +249,4 @@ end
 * Elasticsearch 2.0
 * Suggestions
 * Synonyms
+* Match by a fragment of word
