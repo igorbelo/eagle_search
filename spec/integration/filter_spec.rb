@@ -7,7 +7,7 @@ describe "filtering" do
       eagle_search reindex: false
 
       def index_data
-        as_json only: [:id, :available_stock, :created_at, :updated_at, :active, :name, :description, :sale_price, :list_price]
+        as_json only: [:id, :available_stock, :created_at, :updated_at, :active, :name, :description, :sale_price, :list_price, :comment]
       end
     end
 
@@ -102,6 +102,20 @@ describe "filtering" do
       response = Product.search("*", filters: { name: /.*(neighbor|child).* ?/ })
       expect(response.total_hits).to eq 2
       expect(response.hits.map { |h| h["_source"]["name"] }).to match_array(["Book: The Hidden Child", "Book: The Good Neighbor"])
+    end
+  end
+
+  context "missing filters" do
+    it "matches only docs where comment field is missing or its value is null" do
+      response = Product.search("*", filters: { comment: nil })
+      expect(response.total_hits).to eq 2
+      expect(response.hits.map { |h| h["_source"]["name"] }).to match_array(["Book: The Good Neighbor", "Book: The Hidden Child"])
+    end
+
+    it "matches docs where comment field is not missing or its value is not null" do
+      response = Product.search("*", filters: { not: { comment: nil } })
+      expect(response.total_hits).to eq 1
+      expect(response.hits.first["_source"]["name"]).to eq("Thanth Womens Short Kimono Sleeve Boat Neck Dolman Top")
     end
   end
 
