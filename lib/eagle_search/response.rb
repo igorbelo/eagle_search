@@ -29,6 +29,10 @@ module EagleSearch
       @response["hits"]["hits"]
     end
 
+    def aggregations
+      @response["aggregations"]
+    end
+
     def current_page
       @options[:page] || 1
     end

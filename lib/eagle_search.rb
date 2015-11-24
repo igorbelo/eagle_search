@@ -6,6 +6,7 @@ require "eagle_search/response"
 require "eagle_search/interpreter"
 require "eagle_search/interpreter/query"
 require "eagle_search/interpreter/filter"
+require "eagle_search/interpreter/aggregation"
 require "elasticsearch"
 
 module EagleSearch

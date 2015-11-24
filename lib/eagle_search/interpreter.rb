@@ -17,7 +17,8 @@ module EagleSearch
             query: query_payload,
             filter: filter_payload
           }
-        }
+        },
+        aggregations: aggregations_payload
       }
 
       payload.merge!({ sort: @options[:sort] }) if @options[:sort]
@@ -51,6 +52,11 @@ module EagleSearch
       else
         {}
       end
+    end
+
+    def aggregations_payload
+      return {} unless @options[:aggregations]
+      EagleSearch::Interpreter::Aggregation.new(@options[:aggregations]).payload
     end
   end
 end

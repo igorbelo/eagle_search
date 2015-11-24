@@ -1,6 +1,5 @@
 module EagleSearch
   class Interpreter::Query
-
     def initialize(index, query, options)
       @index = index
       @query = query
