@@ -1,7 +1,5 @@
 module EagleSearch
   class Interpreter::Filter
-    attr_reader :payload
-
     LOGICAL_OPERATORS = { and: :must, not: :must_not, or: :should }
 
     def initialize(filters)
