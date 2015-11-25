@@ -55,20 +55,14 @@ describe "aggregation" do
   it "returns mixed terms and stats aggregations" do
     response = Product.search "*", aggregations: { category: { available_stock: { type: "stats" } } }
     buckets = response.aggregations["category"]["buckets"]
-    expect(buckets.map { |h| h["key"] }).to eq(["Book", "Vesture"])
-    expect(buckets.first["doc_count"]).to eq(2)
-    expect(buckets.first["available_stock"]["count"]).to eq(2)
-    expect(buckets.first["available_stock"]["min"]).to eq(0)
-    expect(buckets.first["available_stock"]["max"]).to eq(300)
-    expect(buckets.first["available_stock"]["avg"]).to eq(150)
-    expect(buckets.first["available_stock"]["sum"]).to eq(300)
 
-    expect(buckets.second["doc_count"]).to eq(1)
-    expect(buckets.second["available_stock"]["count"]).to eq(1)
-    expect(buckets.second["available_stock"]["min"]).to eq(600)
-    expect(buckets.second["available_stock"]["max"]).to eq(600)
-    expect(buckets.second["available_stock"]["avg"]).to eq(600)
-    expect(buckets.second["available_stock"]["sum"]).to eq(600)
+    expect(buckets.map { |h| h["key"] }).to eq(["Book", "Vesture"])
+    expect(buckets.map { |h| h["doc_count"] }).to eq([2, 1])
+    expect(buckets.map { |h| h["available_stock"]["count"] }).to eq([2, 1])
+    expect(buckets.map { |h| h["available_stock"]["min"] }).to eq([0, 600])
+    expect(buckets.map { |h| h["available_stock"]["max"] }).to eq([300, 600])
+    expect(buckets.map { |h| h["available_stock"]["avg"] }).to eq([150, 600])
+    expect(buckets.map { |h| h["available_stock"]["sum"] }).to eq([300, 600])
   end
 
   it "returns mixed terms aggregations many levels deep" do
