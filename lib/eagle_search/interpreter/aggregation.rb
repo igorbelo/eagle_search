@@ -50,7 +50,7 @@ module EagleSearch
     end
 
     def stats_aggregation?(aggregation)
-      aggregation[:type] == "stats"
+      aggregation.is_a?(Hash) && aggregation[:type] == "stats"
     end
 
     def terms_aggregation?(aggregation)
