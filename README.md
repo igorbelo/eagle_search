@@ -167,6 +167,133 @@ Product.search "*", page: 2, per_page: 20
 Defaults:
 `page`: 1 and `per_page`: 10
 
+### Aggregations
+[Official documentation](https://www.elastic.co/guide/en/elasticsearch/reference/1.4/search-aggregations.html)
+
+To aggregate data, set the aggregations option:
+```ruby
+products = Product.search "*", aggregations: :category
+products.aggregations
+# {
+#   "category"=>{
+#     ...
+#     "buckets"=>[
+#       { "key"=>"Book", "doc_count"=>2 },
+#       { "key"=>"Vesture", "doc_count"=>1 }
+#     ]
+#     ...
+#   }
+# }
+```
+
+By default, when an aggregation is a symbol or a string, it will be interpreted as a [terms aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/1.4/search-aggregations-bucket-terms-aggregation.html).
+
+Multiple aggregations:
+```ruby
+products = Product.search "*", aggregations: [:category, :country]
+products.aggregations
+# {
+#   "category"=>{
+#     ...
+#     "buckets"=>[
+#       { "key"=>"Book", "doc_count"=>2 },
+#       { "key"=>"Vesture", "doc_count"=>1 }
+#     ]
+#     ...
+#   },
+#   "country"=>{
+#     ...
+#     "buckets"=>[
+#       { "key"=>"Brazil", "doc_count"=>1 },
+#       { "key"=>"USA", "doc_count"=>1 },
+#       { "key"=>"Spain", "doc_count"=>1 }
+#     ]
+#     ...
+#   }
+# }
+```
+
+Nesting aggregations:
+```ruby
+products = Product.search "*", aggregations: { category: :country }
+products.aggregations
+# {
+#   "category"=>{
+#     ...
+#     "buckets"=>[
+#       {
+#         "key"=>"Book"
+#         "doc_count"=>2,
+#         "country"=>{
+#           "buckets"=>[
+#             { "key"=>"Brazil", "doc_count"=>1 },
+#             { "key"=>"USA", "doc_count"=>1 }
+#           ]
+#         }
+#       },
+#       {
+#         "key"=>"Vesture"
+#         "doc_count"=>1,
+#         "country"=>{
+#           "buckets"=>[
+#             { "key"=>"Spain", "doc_count"=>1 }
+#           ]
+#         }
+#       }
+#     ]
+#     ...
+#   }
+# }
+```
+
+Stats aggregations:
+```ruby
+products = Product.search "*", aggregations: {
+  available_stock: { type: "stats" }
+}
+products.aggregations
+# {
+#   "available_stock"=>{
+#     "count"=>4,
+#     "min"=>20.0,
+#     "max"=>400.0,
+#     "avg"=>185.0,
+#     "sum"=>740.0
+#   }
+# }
+```
+
+Mixing terms and stats aggregations:
+```ruby
+products = Product.search "*", aggregations: {
+  country: {
+    available_stock: { type: "stats" }
+  }
+}
+products.aggregations
+# {
+#   "country"=>{
+#     ...
+#     "buckets"=>[
+#       {
+#         "key"=>"Brazil",
+#         "doc_count"=>1,
+#         "available_stock"=>{
+#           "count"=>4,
+#           "min"=>20.0,
+#           "max"=>400.0,
+#           "avg"=>185.0,
+#           "sum"=>740.0
+#         }
+#       },
+#       ...
+#     ]
+#   }
+# }
+```
+
+Remember that you can go as deep as you want nesting and mixing terms and stats aggregations.
+
 ## Settings
 ### Exact string fields
 By default, EagleSearch (even  Elasticsearch) will map string field as `analyzed`, which won't let you to filter these fields.
@@ -248,10 +375,8 @@ end
 ```
 
 ## Roadmap
-* Aggregations
-* Elasticsearch 2.0
-* Suggestions
 * Synonyms
+* Suggestions
+* Elasticsearch 2.0
 * Match by a fragment of word
 * Typoes and mispellings
-*
