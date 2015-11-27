@@ -174,16 +174,19 @@ To aggregate data, set the aggregations option:
 ```ruby
 products = Product.search "*", aggregations: :category
 products.aggregations
-# {
-#   "category"=>{
-#     ...
-#     "buckets"=>[
-#       { "key"=>"Book", "doc_count"=>2 },
-#       { "key"=>"Vesture", "doc_count"=>1 }
-#     ]
-#     ...
-#   }
-# }
+```
+Response:
+```ruby
+{
+  "category"=>{
+    ...
+    "buckets"=>[
+      { "key"=>"Book", "doc_count"=>2 },
+      { "key"=>"Vesture", "doc_count"=>1 }
+    ]
+    ...
+  }
+}
 ```
 
 By default, when an aggregation is a symbol or a string, it will be interpreted as a [terms aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/1.4/search-aggregations-bucket-terms-aggregation.html).
@@ -192,58 +195,64 @@ Multiple aggregations:
 ```ruby
 products = Product.search "*", aggregations: [:category, :country]
 products.aggregations
-# {
-#   "category"=>{
-#     ...
-#     "buckets"=>[
-#       { "key"=>"Book", "doc_count"=>2 },
-#       { "key"=>"Vesture", "doc_count"=>1 }
-#     ]
-#     ...
-#   },
-#   "country"=>{
-#     ...
-#     "buckets"=>[
-#       { "key"=>"Brazil", "doc_count"=>1 },
-#       { "key"=>"USA", "doc_count"=>1 },
-#       { "key"=>"Spain", "doc_count"=>1 }
-#     ]
-#     ...
-#   }
-# }
+```
+Response:
+```ruby
+{
+  "category"=>{
+    ...
+    "buckets"=>[
+      { "key"=>"Book", "doc_count"=>2 },
+      { "key"=>"Vesture", "doc_count"=>1 }
+    ]
+    ...
+  },
+  "country"=>{
+    ...
+    "buckets"=>[
+      { "key"=>"Brazil", "doc_count"=>1 },
+      { "key"=>"USA", "doc_count"=>1 },
+      { "key"=>"Spain", "doc_count"=>1 }
+    ]
+    ...
+  }
+}
 ```
 
 Nesting aggregations:
 ```ruby
 products = Product.search "*", aggregations: { category: :country }
 products.aggregations
-# {
-#   "category"=>{
-#     ...
-#     "buckets"=>[
-#       {
-#         "key"=>"Book"
-#         "doc_count"=>2,
-#         "country"=>{
-#           "buckets"=>[
-#             { "key"=>"Brazil", "doc_count"=>1 },
-#             { "key"=>"USA", "doc_count"=>1 }
-#           ]
-#         }
-#       },
-#       {
-#         "key"=>"Vesture"
-#         "doc_count"=>1,
-#         "country"=>{
-#           "buckets"=>[
-#             { "key"=>"Spain", "doc_count"=>1 }
-#           ]
-#         }
-#       }
-#     ]
-#     ...
-#   }
-# }
+```
+Response:
+```ruby
+{
+  "category"=>{
+    ...
+    "buckets"=>[
+      {
+        "key"=>"Book"
+        "doc_count"=>2,
+        "country"=>{
+          "buckets"=>[
+            { "key"=>"Brazil", "doc_count"=>1 },
+            { "key"=>"USA", "doc_count"=>1 }
+          ]
+        }
+      },
+      {
+        "key"=>"Vesture"
+        "doc_count"=>1,
+        "country"=>{
+          "buckets"=>[
+            { "key"=>"Spain", "doc_count"=>1 }
+          ]
+        }
+      }
+    ]
+    ...
+  }
+}
 ```
 
 Stats aggregations:
@@ -252,15 +261,18 @@ products = Product.search "*", aggregations: {
   available_stock: { type: "stats" }
 }
 products.aggregations
-# {
-#   "available_stock"=>{
-#     "count"=>4,
-#     "min"=>20.0,
-#     "max"=>400.0,
-#     "avg"=>185.0,
-#     "sum"=>740.0
-#   }
-# }
+```
+Response:
+```ruby
+{
+  "available_stock"=>{
+    "count"=>4,
+    "min"=>20.0,
+    "max"=>400.0,
+    "avg"=>185.0,
+    "sum"=>740.0
+  }
+}
 ```
 
 Mixing terms and stats aggregations:
@@ -271,25 +283,73 @@ products = Product.search "*", aggregations: {
   }
 }
 products.aggregations
-# {
-#   "country"=>{
-#     ...
-#     "buckets"=>[
-#       {
-#         "key"=>"Brazil",
-#         "doc_count"=>1,
-#         "available_stock"=>{
-#           "count"=>4,
-#           "min"=>20.0,
-#           "max"=>400.0,
-#           "avg"=>185.0,
-#           "sum"=>740.0
-#         }
-#       },
-#       ...
-#     ]
-#   }
-# }
+```
+Response:
+```ruby
+{
+  "country"=>{
+    ...
+    "buckets"=>[
+      {
+        "key"=>"Brazil",
+        "doc_count"=>1,
+        "available_stock"=>{
+          "count"=>4,
+          "min"=>20.0,
+          "max"=>400.0,
+          "avg"=>185.0,
+          "sum"=>740.0
+        }
+      },
+      ...
+    ]
+  }
+}
+```
+
+Ranges aggregations:
+```ruby
+products = Product.search "*", aggregations: {
+  available_stock: {
+    ranges: [
+      (0..30),
+      (30..60),
+      { from: 60, to: 90 },
+      { from: 90 }
+    ]
+  }
+}
+products.aggregations
+```
+Response:
+```ruby
+{
+  "available_stock"=>{
+    ...
+    "buckets"=>[
+      {
+        ...
+        "key"=>"0-30",
+        "doc_count"=>4
+      },
+      {
+        ...
+        "key"=>"30-60",
+        "doc_count"=>2
+      },
+      {
+        ...
+        "key"=>"60-90",
+        "doc_count"=>13
+      },
+      {
+        ...
+        "key"=>"90-*",
+        "doc_count"=>37
+      }
+    ]
+  }
+}
 ```
 
 Remember that you can go as deep as you want nesting and mixing terms and stats aggregations.
