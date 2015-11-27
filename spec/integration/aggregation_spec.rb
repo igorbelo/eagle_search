@@ -1,4 +1,5 @@
 require "spec_helper"
+require "pry"
 
 describe "aggregation" do
   before(:all) do
@@ -83,5 +84,19 @@ describe "aggregation" do
 
     expect(description_buckets.map { |h| h["key"] }).to eq(["From a phenomenal new voice in suspense fiction comes a book that will forever change the way you look at the people closest to you", "The brilliant new psychological thriller from worldwide bestseller Camilla Läckberg—the chilling struggle of a young woman facing the darkest chapter of Europe’s past.", "Simply design tunic dress which is basic but stylish."])
     expect(description_buckets.map { |h| h["doc_count"] }).to eq([1, 1, 1])
+  end
+
+  it "returns mixed terms and ranges aggregations" do
+    response = Product.search "*", aggregations: { available_stock: { ranges: [{ from: 0, to: 300 }, (300..600), { from: 600 }] }, category: :name }
+    category_buckets = response.aggregations["category"]["buckets"]
+    available_stock_buckets = response.aggregations["available_stock"]["buckets"]
+
+    expect(category_buckets.map { |h| h["key"] }).to eq(["Book", "Vesture"])
+    expect(category_buckets.map { |h| h["doc_count"] }).to eq([2, 1])
+    expect(category_buckets.flat_map { |h| h["name"]["buckets"] }.map { |h| h["key"] }).to eq(["Book: The Good Neighbor", "Book: The Hidden Child", "Thanth Womens Short Kimono Sleeve Boat Neck Dolman Top"])
+    expect(category_buckets.flat_map { |h| h["name"]["buckets"] }.map { |h| h["doc_count"] }).to eq([1, 1, 1])
+
+    expect(available_stock_buckets.map { |h| h["key"] }).to eq(["0.0-300.0", "300.0-600.0", "600.0-*"])
+    expect(available_stock_buckets.map { |h| h["doc_count"] }).to eq([1, 1, 1])
   end
 end

@@ -13,19 +13,20 @@ module EagleSearch
       payload = {}
 
       if terms_aggregation?(aggregation)
-        payload[aggregation] = build_terms_aggregation(aggregation)
+        return { aggregation => build_terms_aggregation(aggregation) }
       elsif aggregation.is_a?(Array)
         aggregation.each do |agg|
           payload.merge!(build_aggregation(agg))
         end
       elsif aggregation.is_a?(Hash)
-        field_name, aggregation_body = aggregation.first
-        if stats_aggregation?(aggregation_body)
-          payload = { field_name => build_stats_aggregation(field_name) }
-        else
-          aggregation.each do |key, value|
-            payload.merge!(build_aggregation(key))
-            payload[key].merge!(aggregations: build_aggregation(value))
+        aggregation.each do |field_name, aggregation_body|
+          if stats_aggregation?(aggregation_body)
+            payload.merge!({ field_name => build_stats_aggregation(field_name) })
+          elsif range_aggregation?(aggregation_body)
+            payload.merge!({ field_name => build_range_aggregation(field_name, aggregation_body) })
+          else
+            payload.merge!(build_aggregation(field_name))
+            payload[field_name].merge!(aggregations: build_aggregation(aggregation_body))
           end
         end
       end
@@ -49,12 +50,38 @@ module EagleSearch
       }
     end
 
+    def build_range_aggregation(field, range_aggregation)
+      agg = {
+        range: {
+          field: field,
+          ranges: []
+        }
+      }
+
+      range_aggregation[:ranges].each do |range|
+        if range.is_a?(Range)
+          agg[:range][:ranges] << {
+            from: range.min,
+            to: range.max
+          }
+        else
+          agg[:range][:ranges] << range
+        end
+      end
+
+      agg
+    end
+
     def stats_aggregation?(aggregation)
       aggregation.is_a?(Hash) && aggregation[:type] == "stats"
     end
 
     def terms_aggregation?(aggregation)
       aggregation.is_a?(Symbol) || aggregation.is_a?(String)
+    end
+
+    def range_aggregation?(aggregation)
+      aggregation.is_a?(Hash) && aggregation[:ranges]
     end
   end
 end
