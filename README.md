@@ -437,6 +437,6 @@ end
 ## Roadmap
 * Synonyms
 * Suggestions
-* Elasticsearch 2.0
-* Match by a fragment of word
+* Partial matching
 * Typoes and mispellings
+* Elasticsearch 2.0
