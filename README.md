@@ -435,8 +435,8 @@ end
 ```
 
 ## Roadmap
-* Synonyms
-* Suggestions
-* Partial matching
 * Typoes and mispellings
-* Elasticsearch 2.0
+* Partial matching
+* Highlight
+* Suggestions
+* Elasticsearch 2.x
