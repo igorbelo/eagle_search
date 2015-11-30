@@ -64,8 +64,7 @@ module EagleSearch
         match_queries << {
           match: {
             "#{ field_name }.shingle" => {
-              query: @query,
-              boost: 3
+              query: @query
             }
           }
         }
@@ -73,11 +72,19 @@ module EagleSearch
         match_queries << {
           match: {
             "#{ field_name }.synonym" => {
-              query: @query,
-              boost: 2
+              query: @query
             }
           }
         } if @index.has_synonyms?
+
+        match_queries << {
+          match: {
+            "#{ field_name }" => {
+              query: @query,
+              fuzziness: "AUTO"
+            }
+          }
+        }
       end
 
       payload = {
@@ -98,7 +105,7 @@ module EagleSearch
           term: {
             field_name => {
               value: @query,
-              boost: 5
+              boost: 3
             }
           }
         }
@@ -111,7 +118,7 @@ module EagleSearch
       }
 
       if @query_payload[:bool]
-        @query_payload[:bool][:should][1][:bool][:should] << payload
+        @query_payload[:bool][:should] << payload
       else
         @query_payload = payload
       end
