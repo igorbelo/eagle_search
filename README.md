@@ -382,6 +382,43 @@ class Product < ActiveRecord::Base
 end
 ```
 
+### Synonyms
+[Official documentation](https://www.elastic.co/guide/en/elasticsearch/reference/1.4/analysis-synonym-tokenfilter.html)
+
+You can explicitly declare your synonyms in your class:
+```ruby
+class Product < ActiveRecord::Base
+  include EagleSearch
+  eagle_search synonyms: [
+    "dog, canine",
+    "cup, glass, chalice"
+  ]
+end
+```
+So, whether searching by `cup`, `glass` or `chalice` will match documents containing these words, as well as `dog` or `canine`.
+
+Putting synonyms in a separated file:
+```ruby
+class Product < ActiveRecord::Base
+  include EagleSearch
+  eagle_search synonyms: {
+    format: "wordnet", #could be solr format
+    synonyms_path: "synonyms.txt" #relative to elasticsearch config location
+  }
+end
+```
+
+Using [WordNet](http://wordnetcode.princeton.edu/3.0/) files:
+```ruby
+class Product < ActiveRecord::Base
+  include EagleSearch
+  eagle_search synonyms: {
+    format: "wordnet",
+    synonyms_path: "[WORDNET_FILE_LOCATION]"
+  }
+end
+```
+
 ### Custom Mapping
 You can declare the [index mapping](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping-analysis.html) by yourself:
 ```ruby
@@ -440,3 +477,4 @@ end
 * Highlight
 * Suggestions
 * Elasticsearch 2.x
+
