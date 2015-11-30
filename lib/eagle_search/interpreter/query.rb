@@ -69,6 +69,15 @@ module EagleSearch
             }
           }
         }
+
+        match_queries << {
+          match: {
+            "#{ field_name }.synonym" => {
+              query: @query,
+              boost: 3
+            }
+          }
+        } if @index.has_synonyms?
       end
 
       payload = {
@@ -81,7 +90,7 @@ module EagleSearch
     end
 
     def build_term_queries
-      return unless not_analyzed_properties
+      return if not_analyzed_properties.empty?
 
       term_queries = []
       not_analyzed_properties.keys.each do |field_name|

@@ -18,12 +18,22 @@ module EagleSearch
           else
             mapping[:index] = "analyzed"
             mapping[:analyzer] = index_settings[:language] || "english"
+
             mapping[:fields] = {
               shingle: {
                 type: "string",
                 analyzer: "eagle_search_shingle_analyzer"
               }
             }
+
+            mapping[:fields].merge!(
+              {
+                synonym: {
+                  type: "string",
+                  analyzer: "eagle_search_synonym_analyzer"
+                }
+              }
+            ) if @index.has_synonyms?
           end
         end
       end

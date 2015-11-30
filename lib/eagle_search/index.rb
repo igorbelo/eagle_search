@@ -78,6 +78,10 @@ module EagleSearch
       end
     end
 
+    def has_synonyms?
+      @settings[:synonyms]
+    end
+
     private
     def body
       body = {
@@ -92,7 +96,7 @@ module EagleSearch
     end
 
     def analysis_settings
-      {
+      default_analysis = {
         filter: {
           eagle_search_shingle_filter: {
             type: "shingle",
@@ -112,6 +116,39 @@ module EagleSearch
           }
         }
       }
+      merge_synonyms!(default_analysis)
+      default_analysis
+    end
+
+    def merge_synonyms!(default_analysis)
+      if has_synonyms?
+        default_analysis[:filter]["eagle_search_synonym_filter"] = {}
+        default_analysis[:analyzer].merge!(
+          {
+            eagle_search_synonym_analyzer: {
+              tokenizer: "standard",
+              filter: ["lowercase", "eagle_search_synonym_filter"]
+            }
+          }
+        )
+
+        default_analysis[:filter]["eagle_search_synonym_filter"].merge!(
+          synonym_payload(@settings[:synonyms])
+        )
+      end
+    end
+
+    def synonym_payload(synonyms)
+      if synonyms.is_a?(Array)
+        {
+          type: "synonym",
+          synonyms: synonyms
+        }
+      else
+        {
+          type: "synonym"
+        }.merge(synonyms)
+      end
     end
 
     def klass
