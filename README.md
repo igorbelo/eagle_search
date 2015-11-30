@@ -167,6 +167,11 @@ Product.search "*", page: 2, per_page: 20
 Defaults:
 `page`: 1 and `per_page`: 10
 
+### Typoes and misspellings
+```ruby
+Product.search "neighhbour" #matches documents containing whether 'neighbor' or 'neighbour'
+```
+
 ### Aggregations
 [Official documentation](https://www.elastic.co/guide/en/elasticsearch/reference/1.4/search-aggregations.html)
 
@@ -408,13 +413,24 @@ class Product < ActiveRecord::Base
 end
 ```
 
-Using [WordNet](http://wordnetcode.princeton.edu/3.0/) files:
+Using [WordNet format](http://wordnetcode.princeton.edu/3.0/) files:
 ```ruby
 class Product < ActiveRecord::Base
   include EagleSearch
   eagle_search synonyms: {
     format: "wordnet",
     synonyms_path: "[WORDNET_FILE_LOCATION]"
+  }
+end
+```
+
+Using Solr format files:
+```ruby
+class Product < ActiveRecord::Base
+  include EagleSearch
+  eagle_search synonyms: {
+    format: "solr",
+    synonyms_path: "[SOLR_FILE_LOCATION]"
   }
 end
 ```
@@ -472,7 +488,6 @@ end
 ```
 
 ## Roadmap
-* Typoes and mispellings
 * Partial matching
 * Highlight
 * Suggestions
