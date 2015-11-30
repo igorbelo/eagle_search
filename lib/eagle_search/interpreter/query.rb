@@ -74,7 +74,7 @@ module EagleSearch
           match: {
             "#{ field_name }.synonym" => {
               query: @query,
-              boost: 3
+              boost: 2
             }
           }
         } if @index.has_synonyms?
