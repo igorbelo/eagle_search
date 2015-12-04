@@ -1,4 +1,5 @@
 # EagleSearch
+[![Code Climate](https://codeclimate.com/github/igorbelo/eagle_search/badges/gpa.svg)](https://codeclimate.com/github/igorbelo/eagle_search)
 
 EagleSearch is a ruby gem that integrates Rails ActiveRecord to Elasticsearch.
 It handles the Elasticsearch internals by itself, and in most cases minimal (none) configuration is needed.
@@ -507,4 +508,3 @@ end
 ## Roadmap
 * Suggestions
 * Elasticsearch 2.x
-
