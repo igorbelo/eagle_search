@@ -27,8 +27,8 @@ module EagleSearch
 
     def hits
       @response["hits"]["hits"].each_with_index do |h, index|
-        @response["hits"]["hits"][index]["highlight"] = Hash[h["highlight"].map { |field, value| [field, value.first] }]
-      end
+        @response["hits"]["hits"][index]["highlight"] = Hash[h["highlight"].map { |field, value| [field, value.first] }] if @response["hits"]["hits"][index]["highlight"]
+      end if @response["hits"]["hits"]
       @response["hits"]["hits"]
     end
 
