@@ -32,6 +32,9 @@ module EagleSearch
       #size
       payload.merge!({ size: @options[:per_page] }) if @options[:per_page]
 
+      #highlight
+      payload.merge!({ highlight: @options[:highlight] })
+
       payload
     end
 
