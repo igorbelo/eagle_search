@@ -18,6 +18,8 @@ ActiveRecord::Migration.create_table :products do |t|
   t.timestamps null: true
 end
 
+ActiveRecord::Base.raise_in_transactional_callbacks = true
+
 Product = Class.new(ActiveRecord::Base)
 
 def create_products
