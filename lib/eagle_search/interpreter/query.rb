@@ -79,6 +79,14 @@ module EagleSearch
 
         match_queries << {
           match: {
+            "#{ field_name }.autocomplete" => {
+              query: @query
+            }
+          }
+        } if @options[:autocomplete].nil? || @options[:autocomplete]
+
+        match_queries << {
+          match: {
             "#{ field_name }" => {
               query: @query,
               fuzziness: "AUTO"
