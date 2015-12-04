@@ -33,10 +33,31 @@ module EagleSearch
       payload.merge!({ size: @options[:per_page] }) if @options[:per_page]
 
       #highlight
-      payload.merge!({ highlight: @options[:highlight] })
+      if @options[:highlight] && @options[:highlight][:fields]
+        highlight = {
+          fields: {}
+        }
+        @options[:highlight][:fields].each do |field|
+          highlight[:fields][field] = {}
+        end
+
+        if @options[:highlight][:tags]
+          highlight[:pre_tags] = @options[:highlight][:tags]
+          highlight[:post_tags] = @options[:highlight][:tags].map { |tag| tag.gsub(/</, "</")}
+        end
+
+        payload.merge!(highlight: highlight)
+      end
 
       payload
     end
+
+    {
+      highlight: {
+        fields: [:a, :b, :c],
+        tags: ["<xpto>"]
+      }
+    }
 
     private
     def query_payload
