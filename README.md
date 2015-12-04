@@ -172,6 +172,14 @@ Defaults:
 Product.search "neighhbour" #matches documents containing whether 'neighbor' or 'neighbour'
 ```
 
+### Highlight
+```ruby
+products = Product.search "book", highlight: { fields: [:name], tags: ["<span>"] }
+products.hits.each do |hit|
+  hit["highlight"]["name"] # "<span>Book</span>: The Hidden Child"
+end
+```
+
 ### Aggregations
 [Official documentation](https://www.elastic.co/guide/en/elasticsearch/reference/1.4/search-aggregations.html)
 
@@ -489,7 +497,6 @@ end
 
 ## Roadmap
 * Partial matching
-* Highlight
 * Suggestions
 * Elasticsearch 2.x
 
