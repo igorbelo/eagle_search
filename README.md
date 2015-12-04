@@ -180,6 +180,15 @@ products.hits.each do |hit|
 end
 ```
 
+### Autocomplete
+```ruby
+Product.search "fri" # will match docs with fields like: "fries, friendship..."
+```
+You can disable this behavior:
+```ruby
+Product.search "fri", autocomplete: false # won't match docs with fields like: "fries, friendship..."
+```
+
 ### Aggregations
 [Official documentation](https://www.elastic.co/guide/en/elasticsearch/reference/1.4/search-aggregations.html)
 
@@ -496,7 +505,6 @@ end
 ```
 
 ## Roadmap
-* Partial matching
 * Suggestions
 * Elasticsearch 2.x
 
