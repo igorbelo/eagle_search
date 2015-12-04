@@ -103,6 +103,11 @@ module EagleSearch
             min_shingle_size: 2,
             max_shingle_size: 2,
             output_unigrams: false
+          },
+          eagle_search_autocomplete_filter: {
+            type: "edge_ngram",
+            min_gram: 1,
+            max_gram: 20
           }
         },
         analyzer: {
@@ -113,6 +118,10 @@ module EagleSearch
               "lowercase",
               "eagle_search_shingle_filter"
             ]
+          },
+          eagle_search_autocomplete_analyzer: {
+            tokenizer: "standard",
+            filter: ["lowercase", "eagle_search_autocomplete_filter"]
           }
         }
       }

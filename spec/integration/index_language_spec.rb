@@ -26,6 +26,11 @@ describe "language" do
                                            shingle: {
                                              type: "string",
                                              analyzer: "eagle_search_shingle_analyzer"
+                                           },
+                                           autocomplete: {
+                                             type: "string",
+                                             index_analyzer: "eagle_search_autocomplete_analyzer",
+                                             search_analyzer: "portuguese"
                                            }
                                          }
                                        }
@@ -38,6 +43,11 @@ describe "language" do
                                                   shingle: {
                                                     type: "string",
                                                     analyzer: "eagle_search_shingle_analyzer"
+                                                  },
+                                                  autocomplete: {
+                                                    type: "string",
+                                                    index_analyzer: "eagle_search_autocomplete_analyzer",
+                                                    search_analyzer: "portuguese"
                                                   }
                                                 }
                                               }
