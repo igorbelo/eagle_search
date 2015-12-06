@@ -41,7 +41,7 @@ module EagleSearch
           highlight[:fields][field] = {}
         end
 
-        if @options[:highlight][:tags]
+        if @options[:highlight][:tags].is_a?(Array)
           highlight[:pre_tags] = @options[:highlight][:tags]
           highlight[:post_tags] = @options[:highlight][:tags].map { |tag| tag.gsub(/</, "</")}
         end
