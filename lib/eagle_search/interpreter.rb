@@ -52,13 +52,6 @@ module EagleSearch
       payload
     end
 
-    {
-      highlight: {
-        fields: [:a, :b, :c],
-        tags: ["<xpto>"]
-      }
-    }
-
     private
     def query_payload
       if @options[:custom_query]
